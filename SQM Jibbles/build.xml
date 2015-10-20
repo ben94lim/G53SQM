@@ -15,7 +15,7 @@
 	<property name="src" location="src"/>
 	<property name="build" location="build"/>
 	<property name="dist" location="dist"/>
-	<property name="main-class"  value="WebServerMain"/>
+	<property name="main-class"  value="g53sqm.jibble.WebServerMain"/>
 	
 	
 	<!-- - - - - - - - - - - - - - - - - - 
@@ -41,7 +41,7 @@
 		<mkdir dir="${build}/jar"/>
 		<jar jarfile="${build}/jar/Run.jar" basedir="${build}/classes">
 			<manifest>
-			      <attribute name = "Main-Class" value = "WebServerMain"/>
+			      <attribute name = "Main-Class" value = "g53sqm.jibble.WebServerMain"/>
 			</manifest>
 		</jar>
 	</target>
