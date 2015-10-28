@@ -23,7 +23,6 @@
 	     - - - - - - - - - - - - - - - - - -->
     <target name="clean" description="Clean Up Build Files">
     	<delete dir="${build}"/>
-    	<delete file="jibble.jar"/>
     </target>
 
     <!-- - - - - - - - - - - - - - - - - - 
@@ -39,7 +38,8 @@
 	      target: jar                      
 	     - - - - - - - - - - - - - - - - - -->
 	<target name="jar" depends="build" description="Creates execuable jar file">
-		<jar jarfile="jibble.jar" basedir="${build}/classes">
+		<mkdir dir="${build}/jar"/>
+		<jar jarfile="${build}/jar/jibble.jar" basedir="${build}/classes">
 			<manifest>
 			      <attribute name = "Main-Class" value = "g53sqm.jibble.WebServerMain"/>
 			</manifest>
