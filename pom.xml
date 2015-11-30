@@ -28,6 +28,17 @@
   				
   			</configuration>
   		</plugin>
+  		
+  		<plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        	<configuration>
+           		<archive>
+                	<manifest>
+                    	<mainClass>g53sqm.WebServerMain</mainClass>
+                	</manifest>
+            	</archive>
+        	</configuration>
+    	</plugin>
   	</plugins>
   </build>
 
