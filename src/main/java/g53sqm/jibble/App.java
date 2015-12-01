@@ -1,4 +1,4 @@
-package g53sqm;
+package g53sqm.jibble;
 
 /**
  * Hello world!
