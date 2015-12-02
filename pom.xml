@@ -19,7 +19,7 @@
   			
   				<archive>
   					<manifest>
-  						<mainClass>g53sqm.WebServerMain</mainClass>
+  						<mainClass>g53sqm.jibble.WebServerMain</mainClass>
   					</manifest>
   				</archive>
   				
@@ -45,7 +45,7 @@
         	<configuration>
            		<archive>
                 	<manifest>
-                    	<mainClass>g53sqm.WebServerMain</mainClass>
+                    	<mainClass>g53sqm.jibble.WebServerMain</mainClass>
                 	</manifest>
             	</archive>
         	</configuration>
