@@ -36,7 +36,6 @@ public class WebServerMain {
         
         if (args.length > 0) {
             rootDir = args[0];
-            dirRef = new File(rootDir);
         }
         
         if (args.length > 1) {
@@ -49,13 +48,10 @@ public class WebServerMain {
         }
         
         try {
-        	System.out.printf("Jibble web server (modified by Benjamin Lim 013798 for G53SQM)%n");
-        	System.out.printf("Root Directory: %s%n", dirRef.getCanonicalPath());
-        	System.out.printf("Port: %d%n", port);
             WebServer server = new WebServer(rootDir, port);
             server.activate();
         }
-        catch (WebServerException | IOException e) {
+        catch (WebServerException e) {
             System.out.println(e.toString());
         }
     }
