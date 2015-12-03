@@ -32,8 +32,6 @@ public class WebServerMain {
         String rootDir = WebServerConfig.DEFAULT_ROOT_DIRECTORY;
         int port = WebServerConfig.DEFAULT_PORT;
         
-        File dirRef = new File(rootDir);
-        
         if (args.length > 0) {
             rootDir = args[0];
         }
