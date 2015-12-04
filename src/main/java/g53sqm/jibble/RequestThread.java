@@ -34,7 +34,7 @@ public class RequestThread implements Runnable {
         _socket = socket;
         _rootDir = rootDir;
     }
-    
+
     public static String readFirstLine(String request)
     {
     	if (request != null && request.startsWith("GET ") && (request.endsWith(" HTTP/1.0") || request.endsWith("HTTP/1.1"))) {
@@ -43,50 +43,73 @@ public class RequestThread implements Runnable {
     	else
     		return "";
     }
-        
+    
+    public static HashMap<String, String> getHashMap(BufferedReader in)
+    {
+    	HashMap <String, String> headers = new HashMap<String, String>();
+    	String line = null;
+		try {
+			while ((line = in.readLine()) != null) {
+				String[] output = getHashHeader(line);
+				if (output[0]=="") {
+					break;
+				}
+				headers.put(output[0], output[1]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return headers;
+    }
+
+    public static String[] getHashHeader(String line)
+    {
+    	String[] output = new String[2];
+    	line = line.trim();
+    	if (line.equals("")) {
+    		output[0] = "";
+    		return output;
+    	}
+    	int colonPos = line.indexOf(":");
+    	if (colonPos > 0) {
+    		// Key
+    		output[0] = line.substring(0, colonPos);
+    		// Value
+    		output[1] = line.substring(colonPos + 1);    
+    	}
+    	return output;
+    }
+
     // handles a connction from a client.
     public void run() {
-        String ip = "unknown";
-        String request = "unknown";
-        int bytesSent = 0;
-        BufferedInputStream reader = null;
-        try {
-            ip = _socket.getInetAddress().getHostAddress();
-            BufferedReader in = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
-            BufferedOutputStream out = new BufferedOutputStream(_socket.getOutputStream());
-            
-            String path = "";
-            // Read the first line from the client.
-            request = in.readLine();
-            path = readFirstLine(request);
-            if (path==""){
-            	// Invalid request type (no "GET")
-            	Logger.log(ip, request, 405);
-            	_socket.close();
-            	return;
-            }
+    	String ip = "unknown";
+    	String request = "unknown";
+    	int bytesSent = 0;
+    	BufferedInputStream reader = null;
+    	try {
+    		ip = _socket.getInetAddress().getHostAddress();
+    		BufferedReader in = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
+    		BufferedOutputStream out = new BufferedOutputStream(_socket.getOutputStream());
 
-            //Read in and store all the headers.
+    		String path = "";
+    		// Read the first line from the client.
+    		request = in.readLine();
+    		path = readFirstLine(request);
+    		if (path==""){
+    			// Invalid request type (no "GET")
+    			Logger.log(ip, request, 405);
+    			_socket.close();
+    			return;
+    		}
 
-            // Specify String types of HasMap for safety - TJB
-            // HashMap headers = new HashMap();
-            HashMap <String, String> headers = new HashMap<String, String>();
-            String line = null;
-            while ((line = in.readLine()) != null) {
-            	line = line.trim();
-            	if (line.equals("")) {
-            		break;
-            	}
-            	int colonPos = line.indexOf(":");
-            	if (colonPos > 0) {
-            		String key = line.substring(0, colonPos);
-            		String value = line.substring(colonPos + 1);
-            		headers.put(key, value.trim());
-            	}
-            }
+    		//Read in and store all the headers.
 
-            // URLDecocer.decode(String) is deprecated - added "UTF-8"  -  TJB
-            File file = new File(_rootDir, URLDecoder.decode(path, "UTF-8"));
+    		// Specify String types of HashMap for safety - TJB
+    		// HashMap headers = new HashMap();
+    		HashMap <String, String> headers = getHashMap(in);
+
+    		// URLDecocer.decode(String) is deprecated - added "UTF-8"  -  TJB
+    		File file = new File(_rootDir, URLDecoder.decode(path, "UTF-8"));
 
             file = file.getCanonicalFile();
             
