@@ -43,7 +43,7 @@ public class RequestThread implements Runnable {
     	else
     		return "";
     }
-    
+        
     // handles a connction from a client.
     public void run() {
         String ip = "unknown";
@@ -58,14 +58,14 @@ public class RequestThread implements Runnable {
             String path = "";
             // Read the first line from the client.
             request = in.readLine();
-            
-            if (readFirstLine(request)==""){
+            path = readFirstLine(request);
+            if (path==""){
             	// Invalid request type (no "GET")
-                Logger.log(ip, request, 405);
-                _socket.close();
-                return;
+            	Logger.log(ip, request, 405);
+            	_socket.close();
+            	return;
             }
-            
+
             //Read in and store all the headers.
 
             // Specify String types of HasMap for safety - TJB
@@ -73,21 +73,21 @@ public class RequestThread implements Runnable {
             HashMap <String, String> headers = new HashMap<String, String>();
             String line = null;
             while ((line = in.readLine()) != null) {
-                line = line.trim();
-                if (line.equals("")) {
-                    break;
-                }
-                int colonPos = line.indexOf(":");
-                if (colonPos > 0) {
-                    String key = line.substring(0, colonPos);
-                    String value = line.substring(colonPos + 1);
-                    headers.put(key, value.trim());
-                }
+            	line = line.trim();
+            	if (line.equals("")) {
+            		break;
+            	}
+            	int colonPos = line.indexOf(":");
+            	if (colonPos > 0) {
+            		String key = line.substring(0, colonPos);
+            		String value = line.substring(colonPos + 1);
+            		headers.put(key, value.trim());
+            	}
             }
-            
+
             // URLDecocer.decode(String) is deprecated - added "UTF-8"  -  TJB
             File file = new File(_rootDir, URLDecoder.decode(path, "UTF-8"));
-            
+
             file = file.getCanonicalFile();
             
             if (!file.toString().startsWith(_rootDir.toString())) {
