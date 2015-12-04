@@ -35,6 +35,15 @@ public class RequestThread implements Runnable {
         _rootDir = rootDir;
     }
     
+    public static String readFirstLine(String request)
+    {
+    	if (request != null && request.startsWith("GET ") && (request.endsWith(" HTTP/1.0") || request.endsWith("HTTP/1.1"))) {
+    		return request.substring(4, request.length() - 9);
+    	}
+    	else
+    		return "";
+    }
+    
     // handles a connction from a client.
     public void run() {
         String ip = "unknown";
@@ -49,11 +58,9 @@ public class RequestThread implements Runnable {
             String path = "";
             // Read the first line from the client.
             request = in.readLine();
-            if (request != null && request.startsWith("GET ") && (request.endsWith(" HTTP/1.0") || request.endsWith("HTTP/1.1"))) {
-                path = request.substring(4, request.length() - 9);
-            }
-            else {
-                // Invalid request type (no "GET")
+            
+            if (readFirstLine(request)==""){
+            	// Invalid request type (no "GET")
                 Logger.log(ip, request, 405);
                 _socket.close();
                 return;
@@ -62,7 +69,7 @@ public class RequestThread implements Runnable {
             //Read in and store all the headers.
 
             // Specify String types of HasMap for safety - TJB
-//          HashMap headers = new HashMap();
+            // HashMap headers = new HashMap();
             HashMap <String, String> headers = new HashMap<String, String>();
             String line = null;
             while ((line = in.readLine()) != null) {
