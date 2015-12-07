@@ -8,6 +8,11 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import junitparams.*;
 
 import static org.mockito.Mockito.*;
 
@@ -15,25 +20,23 @@ import static org.mockito.Mockito.*;
  * @author Benjamin Lim
  *
  */
+@RunWith(JUnitParamsRunner.class)
 public class WebServerConfigTest {
 
-	@Test
-	public void extractExtensionTest() {
-		String image = "image.jpg";
-		
-		assertEquals(".jpg",WebServerConfig.extractExtension(image));
-		
-		String shtml = "shtml.shtml";
-		
-		assertEquals(".shtml",WebServerConfig.extractExtension(shtml));
-		
-		String shtm = "shtm.shtm";
-		
-		assertEquals(".shtm",WebServerConfig.extractExtension(shtm));
-		
-		String none = "none";
-		
-		assertEquals("",WebServerConfig.extractExtension(none));
+	private Object[] files()
+	{
+		return new Object[]
+		{
+				new Object[] {new File("image.jpg"), ".jpg"},
+				new Object[] {new File("shtml.shtml"), ".shtml"},
+				new Object[] {new File("shtm.shtm"), ".shtm"},
+				new Object[] {new File("none"), ""},
+		};
 	}
-
+	
+	@Test
+	@Parameters(method = "files")
+	public void getExtensionTest(File files, String expected) {
+		assertEquals(expected, WebServerConfig.getExtension(files));
+	}
 }
