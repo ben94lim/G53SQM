@@ -35,7 +35,7 @@ public class RequestThread implements Runnable {
         _rootDir = rootDir;
     }
 
-    public static String readFirstLine(String request)
+    public String readFirstLine(String request)
     {
     	if (request != null && request.startsWith("GET ") && (request.endsWith(" HTTP/1.0") || request.endsWith("HTTP/1.1"))) {
     		return request.substring(4, request.length() - 9);
@@ -44,7 +44,7 @@ public class RequestThread implements Runnable {
     		return "";
     }
     
-    public static HashMap<String, String> getHashMap(BufferedReader in)
+    public HashMap<String, String> getHashMap(BufferedReader in)
     {
     	HashMap <String, String> headers = new HashMap<String, String>();
     	String line = null;
@@ -62,7 +62,7 @@ public class RequestThread implements Runnable {
 		return headers;
     }
 
-    public static String[] getHashHeader(String line)
+    public String[] getHashHeader(String line)
     {
     	String[] output = new String[2];
     	line = line.trim();
@@ -79,8 +79,20 @@ public class RequestThread implements Runnable {
     	}
     	return output;
     }
+    
+    public int checkFile(File file)
+    {
+    	if (!file.toString().startsWith(_rootDir.toString()))
+    		return 1;    	
+    	if (!file.exists())
+    		return 2;
+    	if (file.isDirectory())
+    		return 3;
+    	
+		return 0;
+    }
 
-    // handles a connction from a client.
+    // handles a connection from a client.
     public void run() {
     	String ip = "unknown";
     	String request = "unknown";
@@ -113,7 +125,23 @@ public class RequestThread implements Runnable {
 
             file = file.getCanonicalFile();
             
-            if (!file.toString().startsWith(_rootDir.toString())) {
+            int fileType = checkFile(file);
+            
+            if (fileType == 1) {
+                // The file was not found.
+                Logger.log(ip, request, 404);
+                out.write(("HTTP/1.0 404 File Not Found\r\n" + 
+                           "Content-Type: text/html\r\n" +
+                           "Expires: Thu, 01 Dec 1994 16:00:00 GMT\r\n" +
+                           "\r\n" +
+                           "<h1>404 File Not Found</h1><code>" + path  + "</code><p><hr>" +
+                           "<i>" + WebServerConfig.VERSION + "</i>").getBytes());
+                out.flush();
+                _socket.close();
+                return;
+            }
+            
+            if (fileType == 2) {
                 // Uh-oh, it looks like some lamer is trying to take a peek
                 // outside of our web root directory.
                 Logger.log(ip, request, 404);
@@ -128,7 +156,7 @@ public class RequestThread implements Runnable {
                 return;
             }
             
-            if (file.isDirectory()) {
+            if (fileType == 3) {
                 // Check to see if there are any index files in the directory.
                 for (int i = 0; i < WebServerConfig.DEFAULT_FILES.length; i++) {
                     File indexFile = new File(file, WebServerConfig.DEFAULT_FILES[i]);
@@ -170,20 +198,6 @@ public class RequestThread implements Runnable {
                 }
             }
             
-            if (!file.exists()) {
-                // The file was not found.
-                Logger.log(ip, request, 404);
-                out.write(("HTTP/1.0 404 File Not Found\r\n" + 
-                           "Content-Type: text/html\r\n" +
-                           "Expires: Thu, 01 Dec 1994 16:00:00 GMT\r\n" +
-                           "\r\n" +
-                           "<h1>404 File Not Found</h1><code>" + path  + "</code><p><hr>" +
-                           "<i>" + WebServerConfig.VERSION + "</i>").getBytes());
-                out.flush();
-                _socket.close();
-                return;
-            }
-
             String extension = WebServerConfig.getExtension(file);
             
             // Execute any files in any cgi-bin directories under the web root.
