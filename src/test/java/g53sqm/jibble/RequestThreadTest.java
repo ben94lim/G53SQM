@@ -7,14 +7,15 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.Socket;
 import java.util.HashMap;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import junitparams.*;
 
 import static org.mockito.Mockito.*;
 
@@ -22,25 +23,24 @@ import static org.mockito.Mockito.*;
  * @author User
  *
  */
+@RunWith(JUnitParamsRunner.class)
 public class RequestThreadTest {
 
+	private Object[] requests()
+	{
+		return new Object[]
+		{
+				new Object[] {"GET usable HTTP/1.0", "usable"},
+				new Object[] {"GET usable HTTP/1.1", "usable"},
+				new Object[] {"usable HTTP/1.0", ""},
+				new Object[] {"NOTGET usable HTTP/1.0", ""},
+				new Object[] {"GET usable HTTP/1.5", ""}
+		};
+	}
 	@Test
-	public void readFirstLineTest() {
-		String emptyLine = "";
-		
-		assertEquals("", RequestThread.readFirstLine(emptyLine));
-		
-		String noGET = "usable HTTP/1.0";
-
-		assertEquals("", RequestThread.readFirstLine(noGET));
-
-		String noHTTP = "GET usable ";
-
-		assertEquals("", RequestThread.readFirstLine(noHTTP));
-		
-		String usableLine = "GET usable HTTP/1.0";
-
-		assertEquals("usable", RequestThread.readFirstLine(usableLine));
+	@Parameters(method = "requests")
+	public void readFirstLineTest(String requests, String expected) {
+		assertEquals(expected, RequestThread.readFirstLine(requests));
 	}
 	
 	@Test
