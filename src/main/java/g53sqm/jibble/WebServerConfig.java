@@ -48,13 +48,10 @@ public class WebServerConfig {
     
     // Work out the filename extension.  If there isn't one, we keep
     // it as the empty string ("").
+
     public static String getExtension(java.io.File file) {
-    	return extractExtension(file.getName());
-    }
-    
-    public static String extractExtension(String name) {
-    	String extension = "";
-        String filename = name;
+        String extension = "";
+        String filename = file.getName();
         int dotPos = filename.lastIndexOf(".");
         if (dotPos >= 0) {
             extension = filename.substring(dotPos);
