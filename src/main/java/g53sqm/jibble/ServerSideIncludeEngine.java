@@ -40,10 +40,17 @@ public class ServerSideIncludeEngine {
         out.flush();        
     }
     
+    public static void testParse(BufferedOutputStream out, HashSet <File> visited, File file) throws IOException
+    {
+    	parse(out, visited, file);
+    }
+    
+    static int numCalls = 0;
     
     // Oooh scary recursion
     private static void parse(BufferedOutputStream out, HashSet <File> visited, File file) throws IOException {
     
+    	numCalls++;
     	// Added File generic to HashSet for safe conversion - TJB
     	
         if (!file.exists() || file.isDirectory()) {
