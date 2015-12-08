@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>An SHTML sample</title>
+
+<link rel="stylesheet" type="text/css" href="shtml.css">
+
+</head>
+<body>
+<div class="ssi">
+<!--#include file="header.shtml" -->
+</div>
+
+<h2>Challenges</h2>
+
+<p>Notice that the first three links in the above header are devoid of "you are here" information. This is common with "copy and paste" HTML navigation. The  SHTML "include" removes the necessity of copying and pasting between files, which is good, but would seem to guarantee that this problem would persist, which is not so good. "You are here" info is very helpful to visitors.</p>
+
+<h3>The "dumb" header</h3>
+
+<p>This is the header used in the first three files:</p>
+
+<xmp class="ssi"><!--#include file="header.txt" --></xmp>
+
+<p>It produces a simple, standardized set of links on each page, including an unnecessary link to the current page itself. This is the condition the "Smart Includes" header seeks to overcome...</p>
+
+<div class="ssi">
+<!--#include file="footer.shtml" -->
+</div>
+</body>
+</html>
