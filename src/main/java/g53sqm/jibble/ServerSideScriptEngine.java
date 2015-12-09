@@ -33,17 +33,23 @@ public class ServerSideScriptEngine {
 
     // This could be a lot better.  Consider server side scripting a beta feature
     // for now.
-    
-    public static void execute(BufferedOutputStream out, HashMap serverVars, File file, String path) throws Throwable {
-        
-        // Place server variables into a String array.
-        String[] envp = new String[serverVars.size()];
+	
+	static String[] extractVariables(HashMap serverVars)
+	{
+		String[] envp = new String[serverVars.size()];
         Iterator varIt = serverVars.keySet().iterator();
         for (int i = 0; i < serverVars.size(); i++) {
             String key = (String)varIt.next();
             String value = (String)serverVars.get(key);
             envp[i] = key + "=" + value;
         }
+        return envp;
+	}
+    
+    public static void execute(BufferedOutputStream out, HashMap serverVars, File file, String path) throws Throwable {
+        
+        // Place server variables into a String array.
+        String[] envp = extractVariables(serverVars);
         
         // Execute the external command
         String filename = file.toString();
