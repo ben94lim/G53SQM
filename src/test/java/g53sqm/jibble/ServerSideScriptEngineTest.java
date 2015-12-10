@@ -39,13 +39,8 @@ public class ServerSideScriptEngineTest {
 							"Connection=keep-alive",
 							"Accept=text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"};
 		
-		String[] result = ServerSideScriptEngine.extractVariables(variables);
-		assertsame(expected,result);
-	}
+				String[] result = ServerSideScriptEngine.extractVariables(variables);
 
-	private void assertsame(String[] expected, String[] result) {
-		// TODO Auto-generated method stub
-		
+		assertArrayEquals(expected, result);
 	}
-
 }
