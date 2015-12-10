@@ -46,6 +46,21 @@ public class ServerSideScriptEngine {
         return envp;
 	}
     
+	static String[] getCommand(String fileName)
+	{
+		String[] cmdArray;
+		if (fileName.toLowerCase().endsWith(".pl")) {
+            cmdArray = new String[]{"perl", fileName};
+        }
+        else if (fileName.toLowerCase().endsWith(".php")) {
+            cmdArray = new String[]{"php", fileName};
+        }
+        else {
+            cmdArray = new String[]{fileName};
+        }
+		return cmdArray;
+	}
+
     public static void execute(BufferedOutputStream out, HashMap serverVars, File file, String path) throws Throwable {
         
         // Place server variables into a String array.
@@ -53,17 +68,8 @@ public class ServerSideScriptEngine {
         
         // Execute the external command
         String filename = file.toString();
-        String[] cmdarray = null;
-        
-        if (filename.toLowerCase().endsWith(".pl")) {
-            cmdarray = new String[]{"perl", filename};
-        }
-        else if (filename.toLowerCase().endsWith(".php")) {
-            cmdarray = new String[]{"php", filename};
-        }
-        else {
-            cmdarray = new String[]{filename};
-        }
+        String[] cmdarray = getCommand(filename);
+
         Process process = Runtime.getRuntime().exec(cmdarray, envp, file.getParentFile());
         
         // Send the process output to the connecting client.
