@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class ServerSideIncludeEngineTest {
 	
 	@Test
-	public void test() throws IOException {
+	public void testParse() throws IOException {
 		Socket socket = mock(Socket.class);
 		BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
 		HashSet <File> visited = new HashSet <File> ();
