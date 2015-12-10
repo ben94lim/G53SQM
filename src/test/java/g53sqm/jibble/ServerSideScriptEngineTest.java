@@ -43,4 +43,19 @@ public class ServerSideScriptEngineTest {
 
 		assertArrayEquals(expected, result);
 	}
+	
+	@Test
+	public void getCommandTest() {
+		String[] fileNames = {"file1.pl", "file2.php", "FILE3.php", "file4.jpg"};
+		String[] expected1 = {"perl","php","php","file4.jpg"};
+		String[] expected2 = {"file1.pl","file2.php","FILE3.php",""};
+		
+		for(int i=0; i<4; i++)
+		{		
+			String[]result = ServerSideScriptEngine.getCommand(fileNames[i]);
+			assertEquals(expected1[i], result[0]);
+			if(result[0]!=fileNames[i])
+				assertEquals(expected2[i], result[1]);			
+		}		
+	}
 }
