@@ -36,11 +36,17 @@ public class WebServerConfig {
     public static final String VERSION = "<a href=\"http://www.jibble.org\">Jibble Web Server 1.0</a> - An extremely small Java web server";
     
     public static final String DEFAULT_ROOT_DIRECTORY = "src/main/resources/webfiles";
+    public static final String DEFAULT_BIN_DIRECTORY = "src/main/resources/webfiles/cgi-bin";
     public static final int DEFAULT_PORT = 8088;
     
     public static final String[] DEFAULT_FILES = new String[] {"index.html", "index.htm", "index.shtml", "index.shtm", "index.stm", "index.sht"};
     
     public static final byte[] LINE_SEPARATOR = "\r\n".getBytes();
+    
+    public static String rootDir = DEFAULT_ROOT_DIRECTORY;
+    public static String binDir = DEFAULT_ROOT_DIRECTORY;
+    public static int port = DEFAULT_PORT;
+    public static String log = "Enabled";
     
     // Added <String> generic to HashSet and HashMap to ensure safe type conversion - TJB
     public static final HashSet <String> SSI_EXTENSIONS = new HashSet <String>();

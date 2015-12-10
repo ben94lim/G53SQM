@@ -113,7 +113,8 @@ public class RequestThread implements Runnable {
     		path = readFirstLine(request);
     		if (path==""){
     			// Invalid request type (no "GET")
-    			logger.error("IP: " + ip + " | Request: " + request + " | Code: 405");
+    			if(WebServerConfig.log=="enabled")
+    				logger.error("IP: " + ip + " | Request: " + request + " | Code: 405");
     			_socket.close();
     			return;
     		}
@@ -133,7 +134,8 @@ public class RequestThread implements Runnable {
             
             if (fileType == 1) {
                 // The file was not found.
-            	logger.error("IP: " + ip + " | Request: " + request + " | Code: 404");
+            	if(WebServerConfig.log=="enabled")
+            		logger.error("IP: " + ip + " | Request: " + request + " | Code: 404");
                 out.write(("HTTP/1.0 404 File Not Found\r\n" + 
                            "Content-Type: text/html\r\n" +
                            "Expires: Thu, 01 Dec 1994 16:00:00 GMT\r\n" +
@@ -148,7 +150,8 @@ public class RequestThread implements Runnable {
             if (fileType == 2) {
                 // Uh-oh, it looks like some lamer is trying to take a peek
                 // outside of our web root directory.
-            	logger.error("IP: " + ip + " | Request: " + request + " | Code: 404");
+            	if(WebServerConfig.log=="enabled")
+            		logger.error("IP: " + ip + " | Request: " + request + " | Code: 404");
                 out.write(("HTTP/1.0 403 Forbidden\r\n" +
                            "Content-Type: text/html\r\n" + 
                            "Expires: Thu, 01 Dec 1994 16:00:00 GMT\r\n" +
@@ -171,7 +174,8 @@ public class RequestThread implements Runnable {
                 }
                 if (file.isDirectory()) {
                     // print directory listing
-                	logger.info("IP: " + ip + " | Request: " + request + " | Code: 200");
+                	if(WebServerConfig.log=="enabled")
+                		logger.info("IP: " + ip + " | Request: " + request + " | Code: 200");
                     if (!path.endsWith("/")) {
                         path = path + "/";
                     }
@@ -210,11 +214,13 @@ public class RequestThread implements Runnable {
                     out.write("HTTP/1.0 200 OK\r\n".getBytes());
                     ServerSideScriptEngine.execute(out, headers, file, path);
                     out.flush();
-                    logger.info("IP: " + ip + " | Path: " + path + " | Code: 200");
+                    if(WebServerConfig.log=="enabled")
+                    	logger.info("IP: " + ip + " | Path: " + path + " | Code: 200");
                 }
                 catch (Throwable t) {
                     // Internal server error!
-                	logger.error("IP: " + ip + " | Request: " + request + " | Code: 500");
+                	if(WebServerConfig.log=="enabled")
+                		logger.error("IP: " + ip + " | Request: " + request + " | Code: 500");
                     out.write(("Content-Type: text/html\r\n\r\n" +
                                "<h1>Internal Server Error</h1><code>" + path  + "</code><hr>Your script produced the following error: -<p><pre>" +
                                t.toString() + 
@@ -230,7 +236,8 @@ public class RequestThread implements Runnable {
 
             reader = new BufferedInputStream(new FileInputStream(file));
             
-            logger.info("IP: " + ip + " | Request: " + request + " | Code: 200");
+            if(WebServerConfig.log=="enabled")
+            	logger.info("IP: " + ip + " | Request: " + request + " | Code: 200");
             String contentType = (String)WebServerConfig.MIME_TYPES.get(extension);
             if (contentType == null) {
                 contentType = "application/octet-stream";
@@ -263,7 +270,8 @@ public class RequestThread implements Runnable {
             
         }
         catch (IOException e) {
-        	logger.error("IP: " + ip + " | Error: " + e.toString() + " | Request: " + request + " | Code: 0");
+        	if(WebServerConfig.log=="enabled")
+        		logger.error("IP: " + ip + " | Error: " + e.toString() + " | Request: " + request + " | Code: 0");
             if (reader != null) {
                 try {
                     reader.close();

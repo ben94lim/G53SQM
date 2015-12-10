@@ -1,7 +1,11 @@
 package g53sqm.jibble;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /* 
 Copyright Paul James Mutton, 2001-2004, http://www.jibble.org/
@@ -27,10 +31,10 @@ $Id: WebServerMain.java,v 1.2 2004/02/01 13:37:35 pjm2 Exp $
  */
 public class WebServerMain {
 
+	static String rootDir = WebServerConfig.DEFAULT_ROOT_DIRECTORY;
+    static int port = WebServerConfig.DEFAULT_PORT;
+    
     public static void main(String[] args) {
-        
-        String rootDir = WebServerConfig.DEFAULT_ROOT_DIRECTORY;
-        int port = WebServerConfig.DEFAULT_PORT;
         
         if (args.length > 0) {
             rootDir = args[0];
@@ -38,19 +42,44 @@ public class WebServerMain {
         
         if (args.length > 1) {
             try {
-                port = Integer.parseInt(args[1]);
+            	port = Integer.parseInt(args[1]);
             }
             catch (NumberFormatException e) {
-                // Stick with the default value.
+            	// Stick with the default value.y
             }
         }
-        
+
         try {
-            WebServer server = new WebServer(rootDir, port);
-            server.activate();
+        	WebServer server = new WebServer(rootDir, port);
+
+        	Properties prop = new Properties();
+        	try
+        	{
+        		// Configuration file name
+        		String fileName = "server.config";            
+        		InputStream is = new FileInputStream(fileName);
+
+        		// Properties File
+        		prop.load(is);
+
+        		WebServerConfig.rootDir = prop.getProperty("server.rootDir");
+        		WebServerConfig.binDir = prop.getProperty("server.binDir");
+        		WebServerConfig.port = Integer.parseInt((String) prop.get("server.port"));
+        		String logFile = prop.getProperty("server.logFile");
+        		WebServerConfig.log = prop.getProperty("server.log");
+        	} 
+        	catch (FileNotFoundException e)
+        	{
+        		e.printStackTrace();
+        	}
+        	catch (IOException e)
+        	{
+        		e.printStackTrace();
+        	}
+        	server.activate();
         }
         catch (WebServerException e) {
-            System.out.println(e.toString());
+        	System.out.println(e.toString());
         }
     }
 
